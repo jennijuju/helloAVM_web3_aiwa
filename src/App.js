@@ -29,7 +29,6 @@ class App extends Component {
         super(props);
         this.state = {
             aionweb3: null,
-            aiwa: false,
             account: null, //user account,
             value: " ",
             result: "",
@@ -64,14 +63,31 @@ class App extends Component {
             to: this.state.ctAddress,
             data: data,
             gas: 2000000,
+
             type: "0x1"  //for any transaction except for java contract deployment
         };
 
+
+
         try {
-             await window.aionweb3.sendTransaction(txObject);
-        } catch (err) {
+             let txHash = await window.aionweb3.sendTransaction(txObject).then(function(txHash){
+                 console.log('txHash:', txHash);
+             });
+
+             setInterval(
+                async function() {
+                    const receipt = await web3.eth.getTransactionReceipt(txHash).then(console.log);
+                },
+                30000
+            );
+        }
+        catch (err) {
             console.log(err);
         }
+
+
+
+
     };
 
 
